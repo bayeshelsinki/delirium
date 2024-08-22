@@ -5,7 +5,13 @@
         "src": "manage.py",
         "use": "@vercel/python",
         "config": {
-          "maxLambdaSize": "50mb"
+          "maxLambdaSize": "50mb",
+          "functions": {
+            "api/**/*.py": {
+              "memory": 1024,
+              "maxDuration": 10
+            }
+          }
         }
       }
     ],
