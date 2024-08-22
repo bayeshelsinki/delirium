@@ -1,7 +1,5 @@
 from django.urls import path
 from django.contrib import admin
-from django.conf import settings
-from django.conf.urls.static import static
 
 from . import views
 
@@ -20,6 +18,3 @@ urlpatterns = [
 ]
 
 handler404 = 'crawl.views.custom_404'  # Ensure this view exists
-
-if settings.DEBUG:  # Only in development
-    urlpatterns += static('/favicon.ico', document_root=settings.BASE_DIR / 'static')
