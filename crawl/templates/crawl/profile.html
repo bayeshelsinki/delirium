@@ -1,0 +1,91 @@
+{% extends 'crawl/base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 400px;
+        margin: 20px auto 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        text-align: center;
+        font-family: 'Pacifico', cursive;
+        background: linear-gradient(to right, #ff0066, #ff6600);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        margin-bottom: 20px;
+    }
+    .message {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 10px;
+        color: #555;
+    }
+    input[type="text"], select, button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+    button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<div class="container">
+    <h1>Profile</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Display Name Input -->
+        <label for="name">Display Name:</label>
+        <input type="text" name="name" id="name" value="{{ request.user.profile.display_name }}" required maxlength="12">
+
+        <!-- Team Selection or Creation -->
+        <label for="team">Select a Team:</label>
+        <select name="team" id="team">
+            <option value="">-- Select an existing team --</option>
+            {% for team in teams %}
+                <option value="{{ team.name }}" {% if request.user.profile.team and request.user.profile.team.name == team.name %}selected{% endif %}>
+                    {{ team.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="new_team">Or Create a New Team:</label>
+        <input type="text" name="new_team" id="new_team" placeholder="Enter new team name" maxlength="12">
+
+        <button type="submit">Save Profile</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends 'crawl/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Apply the same font and gradient to the dashboard title */
+        h1 {
+            font-family: 'Pacifico', cursive;
+            background: linear-gradient(to right, #ff0066, #ff6600);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            margin: 20px 0;
+        }
+        canvas {
+            max-width: 100%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Dashboard</h1>
+
+    <div class="chart-container">
+        <h2>Rank Table</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Display Name</th>
+                    <th>Team Name</th>
+                    <th>Number of Drinks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in user_drinks %}
+                    <tr>
+                        <td>{{ item.rank }}</td>
+                        <td>{{ item.user__profile__display_name }}</td>
+                        <td>{{ item.user__profile__team__name }}</td>
+                        <td>{{ item.total_drinks }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4">No data available</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="chart-container">
+        <h2>Total Drinks by Team</h2>
+        <canvas id="teamChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Total Drinks by Bar</h2>
+        <canvas id="barChart"></canvas>
+    </div>
+</div>
+
+<script>
+    // Data for Total Drinks by Team
+    const teamLabels = [{% for item in team_drinks %}'{{ item.user__profile__team__name }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+    const teamData = [{% for item in team_drinks %}{{ item.total_drinks }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+
+    // Data for Total Drinks by Bar
+    const barLabels = [{% for item in bar_drinks %}'{{ item.bar__name }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+    const barData = [{% for item in bar_drinks %}{{ item.total_drinks }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+
+    // Chart for Total Drinks by Team
+    new Chart(document.getElementById('teamChart'), {
+        type: 'bar',
+        data: {
+            labels: teamLabels,
+            datasets: [{
+                label: 'Total Drinks',
+                data: teamData,
+                backgroundColor: 'rgba(40, 167, 69, 0.5)',
+                borderColor: 'rgba(40, 167, 69, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y', // Change to horizontal bars
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                },
+                y: {
+                    ticks: {
+                        autoSkip: false, // Prevents skipping labels
+                    },
+                },
+            },
+        }
+    });
+
+    // Chart for Total Drinks by Bar
+    new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: barLabels,
+            datasets: [{
+                label: 'Total Drinks',
+                data: barData,
+                backgroundColor: 'rgba(220, 53, 69, 0.5)',
+                borderColor: 'rgba(220, 53, 69, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y', // Change to horizontal bars
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                },
+                y: {
+                    ticks: {
+                        autoSkip: false, // Prevents skipping labels
+                    },
+                },
+            },
+        }
+    });
+</script>
+
+
+
+{% endblock %}

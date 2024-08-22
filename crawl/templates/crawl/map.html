@@ -1,0 +1,49 @@
+{% extends 'crawl/base.html' %}
+
+{% block title %}Map{% endblock %}
+
+{% block content %}
+<style>
+        h1 {
+        text-align: center;
+        font-family: 'Pacifico', cursive;
+        background: linear-gradient(to right, #ff0066, #ff6600);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        margin-bottom: 20px;
+    }
+</style>
+<div class="container">
+    <h1>Map</h1>
+
+    <div id="map" style="height: 600px;"></div>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</div>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the map and center it around southern Helsinki
+            var map = L.map('map').setView([60.162, 24.955], 13); // Center and zoom level
+
+            // Add a tile layer (Map provider, e.g., OpenStreetMap)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Define a variable to hold the bars data
+            var bars = {{ bars_data|safe }};
+
+            // Loop through bars and add markers
+            bars.forEach(function(bar) {
+                var marker = L.marker([bar.latitude, bar.longitude]).addTo(map);
+                marker.bindPopup(`<b>${bar.name}</b><br>Latitude: ${bar.latitude}<br>Longitude: ${bar.longitude}`);
+            });
+        });
+    </script>
+{% endblock %}

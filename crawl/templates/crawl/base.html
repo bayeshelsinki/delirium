@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Delirium 2024{% endblock %}</title>
+    
+    <!-- Preconnect and font stylesheet -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Pacifico&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif; /* Default font for body */
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #4a4a4a; /* Dark grey color for text */
+        }
+        nav {
+            background: linear-gradient(to right, #ff0066, #ff6600); /* Gradient background */
+            color: #fff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        .burger-menu {
+            display: none;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 1100; /* Ensure the burger menu is on top */
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+        .nav-links a {
+            color: #fff;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+            font-family: 'Montserrat', sans-serif; /* Font for nav links */
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .nav-menu {
+            display: none;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            padding-top: 60px; /* Space for burger icon */
+            z-index: 1000; /* Ensure the menu is beneath the burger icon */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Optional shadow */
+            overflow-y: auto; /* Ensure scroll if menu items exceed viewport height */
+            background: rgba(0, 0, 0, 0.6); /* Darker semi-transparent black */
+            backdrop-filter: blur(12px); /* Increase blur for more frosted effect */
+            justify-content: center; /* Center items vertically */
+            align-items: center; /* Center items horizontally */
+        }
+        .nav-menu a {
+            color: #fff;
+            margin: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            display: block;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif; /* Font for nav menu items */
+        }
+        .nav-menu a:hover {
+            text-decoration: underline;
+        }
+        .nav-menu.active {
+            display: flex;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif; /* Font for buttons */
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .container {
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 1000px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .nav-links {
+                display: none;
+            }
+            .burger-menu {
+                display: block;
+            }
+        }
+    </style>
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav>
+        <div class="burger-menu" id="burger-menu">
+            &#9776; <!-- Unicode character for the hamburger icon -->
+        </div>
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+                <a href="{% url 'landing_page' %}">Home</a>
+                <a href="{% url 'feed' %}">Feed</a>
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'log_drink' %}">Log Drink</a>
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'map' %}">Map</a>
+                {% else %}
+                <a href="{% url 'landing_page' %}">Home</a>
+            {% endif %}
+        </div>
+        <div class="nav-menu" id="nav-menu">
+            {% if user.is_authenticated %}
+                <a href="{% url 'landing_page' %}">Home</a>
+                <a href="{% url 'feed' %}">Feed</a>
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'log_drink' %}">Log Drink</a>
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'map' %}">Map</a>
+            {% else %}
+                <a href="{% url 'landing_page' %}">Home</a>
+            {% endif %}
+        </div>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        // JavaScript to toggle the navigation menu
+        document.getElementById('burger-menu').addEventListener('click', function() {
+            var menu = document.getElementById('nav-menu');
+            menu.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
